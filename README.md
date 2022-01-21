@@ -1,5 +1,5 @@
 # nso_restconf
-A wrapper for managing the API of NSO
+A wrapper of requests for managing the RestCONF API of NSO
 
 
 # Installation
