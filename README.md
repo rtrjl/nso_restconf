@@ -1,12 +1,11 @@
 # nso_restconf
 A wrapper for managing the API of NSO
 
-
 # Installation
-
 ```
 pip install nso-restconf
 ```
+
 # Usage
 For example we retrieve the NED ids in a json structure :
 ```python
@@ -41,6 +40,11 @@ print(res_ned_id.json())
 ...
 ```
 
+## Methods
+
+Supported methods are GET,POST,PUT,PATCH,DELETE.
+There is others custom methods like action(), a wrapper of POST used to launch a NSO action.
+See the RestConf object source code for supported methods at : https://github.com/rtrjl/nso_restconf/blob/master/nso_restconf/restconf.py
 
 ## License
 
