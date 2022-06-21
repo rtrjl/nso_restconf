@@ -1,6 +1,8 @@
 # nso_restconf
 A wrapper of requests for managing the RestCONF API of NSO
 
+This is an adaptation from Lisa Roach PyRESTCONF code : https://github.com/lisroach/PyRESTCONF
+
 # Installation
 ```
 pip install nso-restconf
