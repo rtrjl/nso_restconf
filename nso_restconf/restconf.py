@@ -59,15 +59,18 @@ class RestConf(object):
     ]
     ContentType = 'application/yang-data+json'
 
-    def __init__(self, address="localhost", port=8080, username=None, password=None):
+    def __init__(self, address="localhost", port=8080, username=None, password=None, verify=True):
         self.port = port
         self.address = address
         self.username = username
         self.password = password
         self._host = f"{self.address}:{self.port}"
+        self.verify = verify
 
     def build_session(self):
         session = requests.Session()
+        session.verify = self.verify
+
         if self.username is not None and self.password is not None:
             session.auth = (self.username, self.password)
         session.headers.update({
