@@ -1,6 +1,13 @@
 import requests
 
 
+"""
+Disable warning for self signed certificate
+"""
+
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 class RestConfException(Exception):
     """
     Raise when a error is returned by Restconf
