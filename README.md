@@ -1,7 +1,7 @@
 # nso_restconf
 A wrapper of requests for managing the RestCONF API of NSO
 
-This is an adaptation from Lisa Roach PyRESTCONF code : https://github.com/lisroach/PyRESTCONF
+This is an adaptation from Lisa Roach's PyRESTCONF code : https://github.com/lisroach/PyRESTCONF
 
 # Installation
 ```
@@ -9,7 +9,7 @@ pip install nso-restconf
 ```
 
 # Usage
-For example we retrieve the NED ids in a json structure :
+For example, we retrieve the NED ids in a json structure :
 ```python
 from nso_restconf.restconf import RestConf
 
