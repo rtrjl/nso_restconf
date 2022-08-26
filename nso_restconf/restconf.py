@@ -1,13 +1,6 @@
 import requests
 
 
-"""
-Disable warning for self signed certificate
-"""
-
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 class RestConfException(Exception):
     """
     Raise when a error is returned by Restconf
@@ -66,13 +59,20 @@ class RestConf(object):
     ]
     ContentType = 'application/yang-data+json'
 
-    def __init__(self, address="localhost", port=8080, username=None, password=None, verify=True):
+    def __init__(self, address="localhost", port=8080, username=None, password=None, verify=True,
+                 disable_warning=False):
         self.port = port
         self.address = address
         self.username = username
         self.password = password
         self._host = f"{self.address}:{self.port}"
         self.verify = verify
+        if disable_warning:
+            """
+            Disable warning for self signed certificate
+            """
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     def build_session(self):
         session = requests.Session()
