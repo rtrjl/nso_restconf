@@ -6,7 +6,7 @@ class RestConfException(Exception):
     Raise when a error is returned by Restconf
     """
 
-    def __init__(self, status_code, error_tag=None, error_message=None, error_type=None, error_path=None):
+    def __init__(self, status_code, error_tag=None, error_message=None, error_type=None, error_path=None, ):
         super().__init__()
         self.error_message = error_message
         self.error_tag = error_tag
@@ -60,13 +60,14 @@ class RestConf(object):
     ContentType = 'application/yang-data+json'
 
     def __init__(self, address="localhost", port=8080, username=None, password=None, verify=True,
-                 disable_warning=False):
+                 disable_warning=False, proxies=None):
         self.port = port
         self.address = address
         self.username = username
         self.password = password
         self._host = f"{self.address}:{self.port}"
         self.verify = verify
+        self.proxies = proxies
         if disable_warning:
             """
             Disable warning for self signed certificate
@@ -86,6 +87,10 @@ class RestConf(object):
             ]),
             'Content-Type': self.ContentType,
         })
+
+        if self.proxies:
+            session.proxies = self.proxies
+
         return session
 
     def action(self, data, endpoint, query_params=None):
