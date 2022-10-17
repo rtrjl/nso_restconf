@@ -160,23 +160,29 @@ class RestConf(object):
         return res
 
     @staticmethod
-    def parse_error(res):
+    def parse_error(res, yang_patch=False):
         if res.status_code == 404:
             exception = RestConfNotFoundException(status_code=404)
+        elif res.status_code >= 500:
+            exception = RestConfException(status_code=res.status_code)
+            exception.error_message = res.text
         else:
             exception = RestConfException(status_code=res.status_code)
-        if len(res.text) > 0:
-            jres = res.json()
-            error = jres['ietf-restconf:errors']['error']
-            if len(error) > 1:
-                raise Exception(f"More than one error return when parsing restconf error. Returned: {res.text}")
-            error = error[0]
-            exception.error_tag = error['error-tag']
-            if 'error-type' in error:
-                exception.error_type = error['error-type']
-            if 'error-message' in error:
-                exception.error_message = error['error-message']
-            if 'error-path' in error:
-                exception.error_path = error['error-path']
+            if len(res.text) > 0:
+                jres = res.json()
+                if yang_patch:
+                    error = jres["ietf-yang-patch:yang-patch-status"]["errors"]["error"]
+                else:
+                    error = jres['ietf-restconf:errors']['error']
+                if len(error) > 1:
+                    raise Exception(f"More than one error return when parsing restconf error. Returned: {res.text}")
+                error = error[0]
+                exception.error_tag = error['error-tag']
+                if 'error-type' in error:
+                    exception.error_type = error['error-type']
+                if 'error-message' in error:
+                    exception.error_message = error['error-message']
+                if 'error-path' in error:
+                    exception.error_path = error['error-path']
 
         return exception
