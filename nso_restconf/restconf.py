@@ -101,12 +101,12 @@ class RestConf(object):
         res = session.post(url, data=data, params=query_params)
         return res
 
-    def query(self, data, endpoint, query_params=None):
+    def query(self, data_query, query_params=None):
+        if isinstance(data_query,dict):
+            data_query = json.dumps(data_query)
         session = self.build_session()
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
-        url = self._host + self.QueryBase + endpoint
-        res = session.post(url, data=data, params=query_params)
+        url = self._host + self.QueryBase
+        res = session.post(url, data=data_query, params=query_params)
         return res
 
     def put(self, data, endpoint, query_params=None):
