@@ -1,5 +1,5 @@
 import requests
-
+import json
 
 class RestConfException(Exception):
     """
