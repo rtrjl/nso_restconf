@@ -42,7 +42,7 @@ class RestConfException(Exception):
 
 class RestConfNotFoundException(RestConfException):
     """
-    Raise when a error "not found" is returned by Restconf.
+    Raise when an error "not found" is returned by Restconf.
     The error details may be empty when the request is correct but the node is not found
     """
     pass
@@ -93,44 +93,48 @@ class RestConf(object):
 
         return session
 
-    def action(self, data, endpoint, query_params=None):
+    def action(self, data_query, endpoint, query_params=None, **kwargs):
+        if isinstance(data_query,dict):
+            data_query = json.dumps(data_query)
         session = self.build_session()
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         url = self._host + self.ActionPath + endpoint
-        res = session.post(url, data=data, params=query_params)
+        res = session.post(url, data=data_query, params=query_params, **kwargs)
         return res
 
-    def query(self, data_query, query_params=None):
+    def query(self, data_query, query_params=None, **kwargs):
         if isinstance(data_query,dict):
             data_query = json.dumps(data_query)
         session = self.build_session()
         url = self._host + self.QueryBase
-        res = session.post(url, data=data_query, params=query_params)
+        res = session.post(url, data=data_query, params=query_params, **kwargs)
         return res
 
-    def put(self, data, endpoint, query_params=None):
+    def put(self, data_query, endpoint, query_params=None, **kwargs):
+        if isinstance(data_query,dict):
+            data_query = json.dumps(data_query)
         session = self.build_session()
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         url = self._host + self.BasePath + endpoint
-        res = session.put(url, data=data, params=query_params)
+        res = session.put(url, data=data_query, params=query_params, **kwargs)
         return res
 
-    def post(self, data, endpoint, query_params=None):
+    def post(self, data, endpoint, query_params=None, **kwargs):
         session = self.build_session()
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         url = self._host + self.BasePath + endpoint
-        res = session.post(url, data=data, params=query_params)
+        res = session.post(url, data=data, params=query_params, **kwargs)
         return res
 
-    def patch(self, data, endpoint, query_params=None):
+    def patch(self, data, endpoint, query_params=None, **kwargs):
         session = self.build_session()
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         url = self._host + self.BasePath + endpoint
-        res = session.patch(url, data=data, params=query_params)
+        res = session.patch(url, data=data, params=query_params, **kwargs)
         return res
 
     def get_root(self):
@@ -139,7 +143,7 @@ class RestConf(object):
         res = session.get(url)
         return res
 
-    def get(self, endpoint='', content='config', query_params=None):
+    def get(self, endpoint='', content='config', query_params=None, **kwargs):
         session = self.build_session()
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
@@ -148,15 +152,15 @@ class RestConf(object):
             query_params = {'content': content}
         elif query_params and content:
             query_params['content'] = content
-        res = session.get(url, params=query_params)
+        res = session.get(url, params=query_params, **kwargs)
         return res
 
-    def delete(self, endpoint, query_params=None):
+    def delete(self, endpoint, query_params=None, **kwargs):
         session = self.build_session()
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         url = self._host + self.BasePath + endpoint
-        res = session.delete(url, params=query_params)
+        res = session.delete(url, params=query_params, **kwargs)
         return res
 
     @staticmethod
