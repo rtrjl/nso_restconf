@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 class RestConfException(Exception):
     """
     Raise when a error is returned by Restconf
@@ -93,48 +94,55 @@ class RestConf(object):
 
         return session
 
-    def action(self, data_query, endpoint, query_params=None, **kwargs):
-        if isinstance(data_query,dict):
-            data_query = json.dumps(data_query)
-        session = self.build_session()
+    @staticmethod
+    def data_query_to_json(data_query):
+        if isinstance(data_query, dict):
+            data_query = json.dumps(data_query, strict=False)
+        return data_query
+
+    @staticmethod
+    def clean_endpoint(endpoint):
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
+        return endpoint
+
+    def action(self, data_query, endpoint, query_params=None, **kwargs):
+        data_query = self.data_query_to_json(data_query)
+        session = self.build_session()
+        endpoint = self.clean_endpoint(endpoint)
         url = self._host + self.ActionPath + endpoint
         res = session.post(url, data=data_query, params=query_params, **kwargs)
         return res
 
     def query(self, data_query, query_params=None, **kwargs):
-        if isinstance(data_query,dict):
-            data_query = json.dumps(data_query)
+        data_query = self.data_query_to_json(data_query)
         session = self.build_session()
         url = self._host + self.QueryBase
         res = session.post(url, data=data_query, params=query_params, **kwargs)
         return res
 
     def put(self, data_query, endpoint, query_params=None, **kwargs):
-        if isinstance(data_query,dict):
-            data_query = json.dumps(data_query)
+        data_query = self.data_query_to_json(data_query)
         session = self.build_session()
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
+        endpoint = self.clean_endpoint(endpoint)
         url = self._host + self.BasePath + endpoint
         res = session.put(url, data=data_query, params=query_params, **kwargs)
         return res
 
-    def post(self, data, endpoint, query_params=None, **kwargs):
+    def post(self, data_query, endpoint, query_params=None, **kwargs):
+        data_query = self.data_query_to_json(data_query)
         session = self.build_session()
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
+        endpoint = self.clean_endpoint(endpoint)
         url = self._host + self.BasePath + endpoint
-        res = session.post(url, data=data, params=query_params, **kwargs)
+        res = session.post(url, data=data_query, params=query_params, **kwargs)
         return res
 
-    def patch(self, data, endpoint, query_params=None, **kwargs):
+    def patch(self, data_query, endpoint, query_params=None, **kwargs):
+        data_query = self.data_query_to_json(data_query)
         session = self.build_session()
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
+        endpoint = self.clean_endpoint(endpoint)
         url = self._host + self.BasePath + endpoint
-        res = session.patch(url, data=data, params=query_params, **kwargs)
+        res = session.patch(url, data=data_query, params=query_params, **kwargs)
         return res
 
     def get_root(self):
@@ -145,8 +153,7 @@ class RestConf(object):
 
     def get(self, endpoint='', content='config', query_params=None, **kwargs):
         session = self.build_session()
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
+        endpoint = self.clean_endpoint(endpoint)
         url = self._host + self.BasePath + endpoint
         if not query_params and content:
             query_params = {'content': content}
@@ -157,8 +164,7 @@ class RestConf(object):
 
     def delete(self, endpoint, query_params=None, **kwargs):
         session = self.build_session()
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
+        endpoint = self.clean_endpoint(endpoint)
         url = self._host + self.BasePath + endpoint
         res = session.delete(url, params=query_params, **kwargs)
         return res
