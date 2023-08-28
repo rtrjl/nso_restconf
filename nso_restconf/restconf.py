@@ -97,7 +97,7 @@ class RestConf(object):
     @staticmethod
     def data_query_to_json(data_query):
         if isinstance(data_query, dict):
-            data_query = json.dumps(data_query, strict=False)
+            data_query = json.dumps(data_query)
         return data_query
 
     @staticmethod
